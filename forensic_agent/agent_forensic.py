@@ -38,7 +38,11 @@ def run_forensic_test():
         print("[FAIL] Failed to extract the price mentioned in the audio transcript.")
         
     # Q3: Check for quality gate effectiveness
-    corrupt_check = any("Null pointer exception" in d['content'] for d in data)
+    # Support both v1 ('content') and v2 ('body_text')
+    corrupt_check = any(
+        "Null pointer exception" in (d.get('content') or d.get('body_text') or "") 
+        for d in data
+    )
     if not corrupt_check:
         print("[PASS] Quality gate successfully rejected corrupt content.")
         score += 1
